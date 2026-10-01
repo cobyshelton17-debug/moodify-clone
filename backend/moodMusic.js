@@ -1,7 +1,19 @@
 import axios from "axios"
 import dotenv from "dotenv"
+import { fileURLToPath } from "url"
+import path from "path"
 
-dotenv.config()
+const __dirname = path.dirname(fileURLToPath(import.meta.url))
+
+dotenv.config({ path: path.join(__dirname, ".env") })
+
+const { SPOTIFY_CLIENT_ID, SPOTIFY_CLIENT_SECRET } = process.env
+
+if (!SPOTIFY_CLIENT_ID || !SPOTIFY_CLIENT_SECRET) {
+  throw new Error(
+    "Missing Spotify credentials. Add SPOTIFY_CLIENT_ID and SPOTIFY_CLIENT_SECRET to backend/.env"
+  )
+}
 
 async function getAccessToken() {
   const response = await axios.post(
@@ -11,7 +23,7 @@ async function getAccessToken() {
      headers: {
       "Authorization": "Basic " + 
       Buffer.from(
-        process.env.SPOTIFY_CLIENT_ID + ":" + process.env.SPOTIFY_CLIENT_SECRET
+        SPOTIFY_CLIENT_ID + ":" + SPOTIFY_CLIENT_SECRET
       ).toString("base64"),
     "Content-Type": "application/x-www-form-urlencoded",
     },
@@ -25,12 +37,12 @@ function moodToGenre(mood) {
         "happy": "pop",
         "sad": "acoustic",
         "angry": "rock",
-        "relaxed": "chill",
-        "energetic": "workout",
-        "romantic": "love",
-        "focussed": "study"
+        "relaxed": "ambient",
+        "energetic": "dance",
+        "romantic": "r-and-b",
+        "focussed": "jazz"
     };
-    return genres[mood.toLowerCase()] || "pop"; // Default to pop if mood is not found
+    return genres[mood?.toLowerCase()] || "pop"; // Default to pop if mood is not found
 }
 
 export default async function getSongsByMood(mood) {
