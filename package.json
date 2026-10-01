@@ -1,18 +1,6 @@
 {
-  "name": "moodify",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "dev": "nodemon index.js"
-  },
-  "keywords": [],
-  "type": "module",
   "dependencies": {
-    "axios": "^1.20.0",
-    "dotenv": "^18.0.4"
-  },
-  "devDependencies": {
-    "nodemon": "^3.1.14"
+    "@tailwindcss/cli": "^4.3.3",
+    "tailwindcss": "^4.3.3"
   }
 }

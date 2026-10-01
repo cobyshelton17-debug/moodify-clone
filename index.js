@@ -1,7 +1,7 @@
-import http from "hhtp";
-import getSongsByMood from "./moodMusic.js";
+import http from "http";
+import getSongsByMood from "./backend/moodMusic.js";
 
-const PORT = 3000;
+const PORT = 3001;
 
 const server = http.createServer(async (req, res) => {
     res.setHeader("Access-Control-Allow-Origin", "*");
@@ -12,7 +12,7 @@ const server = http.createServer(async (req, res) => {
         const mood = new URL(req.url, "http://localhost").searchParams.get("mood");
         const songs = await getSongsByMood(mood);
 
-        res.writeHead(200, { "Content-Type": "application/json" });
+        res.writeHead(200, {"Content-Type": "application/json" });
         return res.end(JSON.stringify(songs));
     }
 
