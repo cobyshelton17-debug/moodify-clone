@@ -4,6 +4,7 @@ export default function App() {
   const [mood, setMood] = useState("");
   const [songs, setSongs] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
   const handleMoodChange = (e) => {
     setMood(e.target.value);
@@ -11,12 +12,20 @@ export default function App() {
 
   const handleGetSongs = async () => {
     setLoading(true);
+    setError("");
     try {
       const response = await fetch(`/api/music?mood=${mood}`);
       const data = await response.json();
+      if (!Array.isArray(data)) {
+        setError(data.detail || data.error || "Something went wrong");
+        setSongs([]);
+        return;
+      }
       setSongs(data);
-    } catch (error) {
-      console.error("Error fetching songs:", error);
+    } catch {
+      setError("Could not reach the server");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -36,10 +45,15 @@ export default function App() {
           <option value="focussed">Focussed</option>
         </select>
       </div>
-      <button onClick={handleGetSongs}>Get Songs</button>
-      <div>
+      <button onClick={handleGetSongs} disabled={loading}>
+        {loading ? "Loading..." : "Get Songs"}
+      </button>
+
+      {error && <p className="status error">{error}</p>}
+
+      <div className="songs">
         {songs.map((song, index) => (
-          <div key={index}>
+          <div className="song" key={index}>
             <h3>{song.name}</h3>
             <p>Artist: {song.artist}</p>
             <a href={song.url} target="_blank" rel="noopener noreferrer">
